@@ -3,4 +3,8 @@ name = "serde-rename-rule"
 version = "0.1.0"
 edition = "2018"
 
+[features]
+_rustversion_before_1_26_0 = ["rustversion"]
+
 [dependencies]
+rustversion = { version = "1.0", default-features = false, optional = true }

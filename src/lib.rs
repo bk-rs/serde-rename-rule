@@ -1,19 +1,11 @@
+//! Serde RenameRule. [Extract from](https://github.com/serde-rs/serde/blob/v1.0.126/serde_derive/src/internals/case.rs)
+//!
+
 use std::{convert::TryFrom, error, fmt, str::FromStr};
 
 #[cfg(feature = "rustversion")]
 #[rustversion::before(1.26.0)]
 use std::ascii::AsciiExt as _;
-
-static RENAME_RULES: &[(&str, RenameRule)] = &[
-    ("lowercase", RenameRule::LowerCase),
-    ("UPPERCASE", RenameRule::UpperCase),
-    ("PascalCase", RenameRule::PascalCase),
-    ("camelCase", RenameRule::CamelCase),
-    ("snake_case", RenameRule::SnakeCase),
-    ("SCREAMING_SNAKE_CASE", RenameRule::ScreamingSnakeCase),
-    ("kebab-case", RenameRule::KebabCase),
-    ("SCREAMING-KEBAB-CASE", RenameRule::ScreamingKebabCase),
-];
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum RenameRule {
@@ -37,6 +29,17 @@ pub enum RenameRule {
     /// Rename direct children to "SCREAMING-KEBAB-CASE" style.
     ScreamingKebabCase,
 }
+
+static RENAME_RULES: &[(&str, RenameRule)] = &[
+    ("lowercase", RenameRule::LowerCase),
+    ("UPPERCASE", RenameRule::UpperCase),
+    ("PascalCase", RenameRule::PascalCase),
+    ("camelCase", RenameRule::CamelCase),
+    ("snake_case", RenameRule::SnakeCase),
+    ("SCREAMING_SNAKE_CASE", RenameRule::ScreamingSnakeCase),
+    ("kebab-case", RenameRule::KebabCase),
+    ("SCREAMING-KEBAB-CASE", RenameRule::ScreamingKebabCase),
+];
 
 impl RenameRule {
     pub fn from_rename_all_str(s: &str) -> Result<Self, ParseError> {

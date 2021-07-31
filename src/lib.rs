@@ -144,6 +144,23 @@ impl fmt::Display for RenameRule {
 pub enum ParseError {
     Unknown(String),
 }
+
+impl ParseError {
+    pub fn msg_for_rename_all(&self) -> String {
+        match self {
+            Self::Unknown(s) => format!(
+                r#"unknown rename rule `rename_all = "{}"`, expected one of {}"#,
+                s,
+                RENAME_RULES
+                    .iter()
+                    .map(|(name, _)| format!(r#""{}""#, name))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ),
+        }
+    }
+}
+
 impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -179,6 +196,17 @@ mod tests {
         assert_eq!(rule.to_string(), name);
 
         Ok(())
+    }
+
+    #[test]
+    fn test_parse_error_msg() {
+        match RenameRule::from_rename_all_str("foo") {
+            Ok(_) => panic!(""),
+            Err(err) => assert_eq!(
+                err.msg_for_rename_all(),
+                r#"unknown rename rule `rename_all = "foo"`, expected one of "lowercase", "UPPERCASE", "PascalCase", "camelCase", "snake_case", "SCREAMING_SNAKE_CASE", "kebab-case", "SCREAMING-KEBAB-CASE""#
+            ),
+        }
     }
 
     #[test]
